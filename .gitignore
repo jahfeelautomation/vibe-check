@@ -1,0 +1,6 @@
+# Private runs against real apps never belong in the public repo.
+/private-runs/
+*.private.md
+.DS_Store
+__pycache__/
+*.pyc

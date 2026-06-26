@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vibe Check: the review your vibe-coded app never got</title>
+<style>
+  body{max-width:46rem;margin:3rem auto;padding:0 1.2rem;font:17px/1.6 system-ui,sans-serif;color:#1a1a1a}
+  h1{font-size:1.9rem;margin-bottom:.2rem} .tag{color:#555;margin-top:0}
+  code{background:#f3f3f3;padding:.1rem .3rem;border-radius:4px}
+  .rule{border-left:4px solid #1a1a1a;padding-left:1rem;margin:1.5rem 0}
+</style>
+</head>
+<body>
+<h1>Vibe Check</h1>
+<p class="tag">The senior-engineer and security review your vibe-coded app never got.</p>
+<p>You used an AI coding tool to ship real software. It runs. Tests pass. It looks
+done. What you can't tell is whether it's actually safe to keep running, or whether
+it'll last. "It runs" is not "it's safe."</p>
+<p>Vibe Check is a folder you hand to your own Claude Code. It reads the project you
+built and gives you an honest Build Review Report: a clear go or no-go, a fix list
+worst-first with exact instructions, and an honest list of what it could <em>not</em>
+check, so you're never fooled into feeling covered when you're not.</p>
+<div class="rule"><strong>The one rule it can't break:</strong> it never calls your
+build "secure" or "ready" while anything serious is still open, and it always shows
+the full list of what it couldn't check. A small script (<code>check.py</code>)
+enforces that before any report is shown.</div>
+<p>Run it two ways: on something you already shipped, or on each new change before you
+trust it. Your code never leaves your machine.</p>
+<p><a href="https://github.com/jahfeelautomation/vibe-check">View the folder on GitHub</a>.</p>
+</body>
+</html>
