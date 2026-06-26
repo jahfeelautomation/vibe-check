@@ -206,22 +206,26 @@
     </div>
   </section>
 
-  <!-- REAL RUNS -->
+  <!-- EVIDENCE -->
   <section>
-    <div class="h2">Real runs, on real apps</div>
+    <div class="h2">See it bite, then see it stay honest</div>
     <div class="run">
-      <p>It has already done this on a production app we build and run for a paying business. The honest
-      result was undramatic on purpose: it confirmed the security work held, flagged two low items that
-      turned out to be fine on a closer look, and handed back the list of what only a running system and a
-      person can prove. That last list is the point. A green check that means nothing is exactly what
-      this tool refuses to give you.</p>
+      <p><b>First, the teeth.</b> Pointed at a demo app built to fail on purpose, it returns a flat NO-GO
+      and names the real problems in plain English: a login an attacker can walk straight through, an admin
+      page that hands out passwords with no sign-in, and a secret key typed into the source. Every one
+      comes with the exact fix. No hand-waving, no "looks mostly fine."</p>
+      <p style="margin-top:1rem"><a href="https://github.com/jahfeelautomation/vibe-check/blob/main/sample-output/build-review.md">See the full no-go report &rarr;</a></p>
+      <p style="margin-top:1.5rem"><b>Then, the honesty.</b> Pointed at a production app we build and run
+      for a paying business, the result was undramatic on purpose: it confirmed the security work held,
+      flagged two low items that turned out fine on a closer look, and handed back the list of what only a
+      running system and a person can prove. A green check that means nothing is exactly what this tool
+      refuses to give you.</p>
       <p style="margin-top:1rem"><a href="https://github.com/jahfeelautomation/vibe-check/blob/main/case-study.md">Read the full run &rarr;</a></p>
       <p style="margin-top:1.5rem">A second run went the other way: one deep dive into the most dangerous
       thing an app can do, an automation that types real data into an outside system and ends on a submit
       you can never take back. The only question that matters is whether the machine can press that button
       by accident. Reading the code, the answer was no, locked three independent ways, one of them a test
-      that breaks the build if anyone ever weakens it. Then it named the live tests still needed before
-      anyone calls it bulletproof.</p>
+      that breaks the build if anyone ever weakens it.</p>
       <p style="margin-top:1rem"><a href="https://github.com/jahfeelautomation/vibe-check/blob/main/case-study-2.md">Read the second run &rarr;</a></p>
     </div>
   </section>
