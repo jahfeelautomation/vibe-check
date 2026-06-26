@@ -3,30 +3,231 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vibe Check: the review your vibe-coded app never got</title>
+<title>Vibe Check: the senior-engineer and security review your vibe-coded app never got</title>
+<meta name="description" content="A folder you hand to your own Claude Code. It reads the app you built with AI and gives you an honest go or no-go, a worst-first fix list, and a straight list of what it could not check.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jahfeelautomation.github.io/vibe-check/">
+<meta property="og:title" content="Vibe Check">
+<meta property="og:description" content="The senior-engineer and security review your vibe-coded app never got.">
 <style>
-  body{max-width:46rem;margin:3rem auto;padding:0 1.2rem;font:17px/1.6 system-ui,sans-serif;color:#1a1a1a}
-  h1{font-size:1.9rem;margin-bottom:.2rem} .tag{color:#555;margin-top:0}
-  code{background:#f3f3f3;padding:.1rem .3rem;border-radius:4px}
-  .rule{border-left:4px solid #1a1a1a;padding-left:1rem;margin:1.5rem 0}
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0a0d13; --panel:#11161f; --panel2:#0e131b; --line:#222b39;
+    --txt:#e6edf3; --muted:#94a3b4; --dim:#6b7888;
+    --go:#3fb950; --amber:#d29922; --red:#f85149; --cyan:#56b6e3;
+    --mono:ui-monospace,SFMono-Regular,"Cascadia Code",Consolas,monospace;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg); color:var(--txt); font-family:var(--sans);
+    line-height:1.6; -webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(900px 500px at 50% -8%,rgba(63,185,80,.10),transparent 60%);
+  }
+  a{color:var(--cyan);text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 1.25rem}
+
+  header{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 0;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:.6rem;font-weight:700;letter-spacing:.2px}
+  .brand .mk{font-family:var(--mono);color:var(--go);font-size:1.05rem}
+  .brand b{font-size:1.05rem}
+  header a.gh{font-size:.92rem;color:var(--muted);border:1px solid var(--line);padding:.4rem .8rem;border-radius:8px}
+  header a.gh:hover{color:var(--txt);border-color:#3a4658;text-decoration:none}
+
+  /* hero */
+  .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:2.5rem;align-items:center;padding:3.4rem 0 2.6rem}
+  .kicker{font-family:var(--mono);font-size:.8rem;letter-spacing:.5px;color:var(--go);text-transform:uppercase;margin-bottom:1rem}
+  h1{font-size:clamp(2.6rem,6vw,3.9rem);line-height:1.02;letter-spacing:-1.2px;font-weight:800}
+  .tag{font-size:clamp(1.05rem,2.4vw,1.32rem);color:var(--txt);margin-top:.9rem;font-weight:600}
+  .lede{color:var(--muted);font-size:1.06rem;margin-top:1.1rem;max-width:34rem}
+  .cta{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.7rem}
+  .btn{display:inline-flex;align-items:center;gap:.5rem;font-weight:600;font-size:.98rem;padding:.72rem 1.25rem;border-radius:10px;border:1px solid transparent}
+  .btn.primary{background:var(--go);color:#062b10;border-color:var(--go)}
+  .btn.primary:hover{background:#46c75a;text-decoration:none}
+  .btn.ghost{color:var(--txt);border-color:#33415480;background:#0f151e}
+  .btn.ghost:hover{border-color:#46566c;text-decoration:none}
+  .micro{color:var(--dim);font-size:.86rem;margin-top:1rem;font-family:var(--mono)}
+
+  /* report card */
+  .card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:14px;box-shadow:0 24px 60px -28px rgba(0,0,0,.8);overflow:hidden}
+  .card .bar{display:flex;align-items:center;gap:.5rem;padding:.7rem .9rem;border-bottom:1px solid var(--line);background:#0c1119}
+  .dot{width:11px;height:11px;border-radius:50%} .d1{background:#f85149}.d2{background:#d29922}.d3{background:#3fb950}
+  .card .file{margin-left:.4rem;font-family:var(--mono);font-size:.82rem;color:var(--muted)}
+  .card .body{padding:1.1rem 1.15rem 1.25rem}
+  .verdict{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--mono);font-weight:700;font-size:.86rem;color:var(--red);border:1px solid #f8514955;background:#f851491a;padding:.32rem .7rem;border-radius:7px}
+  .vcap{color:var(--dim);font-size:.8rem;margin:.6rem 0 1rem}
+  .finding{display:grid;grid-template-columns:auto 1fr;gap:.55rem;padding:.5rem 0;border-top:1px dashed #1d2735;font-size:.9rem}
+  .finding:first-of-type{border-top:none}
+  .sev{font-family:var(--mono);font-size:.7rem;font-weight:700;padding:.12rem .42rem;border-radius:5px;height:fit-content;margin-top:.15rem}
+  .sev.c{color:#ffd7d4;background:#f851492e;border:1px solid #f8514955}
+  .sev.h{color:#ffe6c2;background:#d299222e;border:1px solid #d2992255}
+  .finding .ttl{color:var(--txt)} .finding .fix{color:var(--muted);display:block;margin-top:.12rem}
+  .cnc{margin-top:1rem;padding-top:.85rem;border-top:1px solid var(--line);font-size:.84rem;color:var(--muted)}
+  .cnc b{color:var(--cyan);font-weight:600;font-family:var(--mono);font-size:.76rem;letter-spacing:.4px}
+  .gateline{margin-top:.9rem;font-family:var(--mono);font-size:.78rem;color:var(--go);background:#3fb9501a;border:1px solid #3fb95040;border-radius:7px;padding:.5rem .7rem}
+
+  /* sections */
+  section{padding:2.6rem 0;border-top:1px solid var(--line)}
+  .h2{font-size:clamp(1.5rem,3.5vw,2rem);letter-spacing:-.5px;font-weight:800}
+  .sub{color:var(--muted);margin-top:.5rem;max-width:46rem}
+  .chips{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.4rem}
+  .chip{font-family:var(--mono);font-size:.84rem;color:var(--muted);border:1px solid var(--line);background:#0e131b;border-radius:999px;padding:.45rem .9rem}
+
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.6rem}
+  .step{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:1.2rem 1.15rem}
+  .step .n{font-family:var(--mono);color:var(--go);font-size:.82rem;font-weight:700}
+  .step h3{font-size:1.06rem;margin:.5rem 0 .35rem;font-weight:700}
+  .step p{color:var(--muted);font-size:.94rem}
+
+  .rule{display:grid;grid-template-columns:auto 1fr;gap:1.1rem;align-items:start;background:linear-gradient(180deg,#0f1720,#0c1118);border:1px solid #2a3a2e;border-left:4px solid var(--go);border-radius:12px;padding:1.4rem 1.4rem}
+  .rule .lock{font-family:var(--mono);color:var(--go);font-size:1.4rem;font-weight:800}
+  .rule h3{font-size:1.15rem;font-weight:800;margin-bottom:.4rem}
+  .rule p{color:var(--muted)} .rule code{font-family:var(--mono);color:var(--go);background:#3fb9501f;padding:.05rem .35rem;border-radius:5px;font-size:.92em}
+
+  .deliver{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.5rem}
+  .del{border:1px solid var(--line);border-radius:12px;padding:1.15rem;background:var(--panel2)}
+  .del .ico{font-family:var(--mono);font-weight:800;color:var(--go);font-size:1.05rem}
+  .del h3{font-size:1.02rem;margin:.45rem 0 .3rem} .del p{color:var(--muted);font-size:.92rem}
+
+  .modes{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.5rem}
+  .mode{border:1px solid var(--line);border-radius:12px;padding:1.2rem;background:var(--panel)}
+  .mode .t{font-family:var(--mono);color:var(--cyan);font-size:.82rem;font-weight:700;letter-spacing:.3px}
+  .mode h3{font-size:1.08rem;margin:.4rem 0 .35rem} .mode p{color:var(--muted);font-size:.94rem}
+
+  .run{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:1.5rem 1.5rem;margin-top:1.4rem}
+  .run p{color:var(--muted);max-width:50rem}
+
+  footer{padding:2.4rem 0 3rem;border-top:1px solid var(--line);color:var(--dim);font-size:.9rem;display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center}
+  footer a{color:var(--muted)}
+  .foot-links{display:flex;gap:1.3rem;flex-wrap:wrap}
+
+  @media(max-width:820px){
+    .hero{grid-template-columns:1fr;gap:2rem;padding:2.4rem 0 1.8rem}
+    .grid3,.deliver,.modes{grid-template-columns:1fr}
+  }
 </style>
 </head>
 <body>
-<h1>Vibe Check</h1>
-<p class="tag">The senior-engineer and security review your vibe-coded app never got.</p>
-<p>You used an AI coding tool to ship real software. It runs. Tests pass. It looks
-done. What you can't tell is whether it's actually safe to keep running, or whether
-it'll last. "It runs" is not "it's safe."</p>
-<p>Vibe Check is a folder you hand to your own Claude Code. It reads the project you
-built and gives you an honest Build Review Report: a clear go or no-go, a fix list
-worst-first with exact instructions, and an honest list of what it could <em>not</em>
-check, so you're never fooled into feeling covered when you're not.</p>
-<div class="rule"><strong>The one rule it can't break:</strong> it never calls your
-build "secure" or "ready" while anything serious is still open, and it always shows
-the full list of what it couldn't check. A small script (<code>check.py</code>)
-enforces that before any report is shown.</div>
-<p>Run it two ways: on something you already shipped, or on each new change before you
-trust it. Your code never leaves your machine.</p>
-<p><a href="https://github.com/jahfeelautomation/vibe-check">View the folder on GitHub</a>.</p>
+<div class="wrap">
+
+  <header>
+    <div class="brand"><span class="mk">&gt;_</span><b>Vibe Check</b></div>
+    <a class="gh" href="https://github.com/jahfeelautomation/vibe-check">View on GitHub</a>
+  </header>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div>
+      <div class="kicker">A build review for apps you made with AI</div>
+      <h1>Vibe Check</h1>
+      <p class="tag">The senior-engineer and security review your vibe-coded app never got.</p>
+      <p class="lede">You used an AI coding tool to ship real software. It runs, the tests pass, it
+      looks done. Vibe Check is a folder you hand to your own Claude Code. It reads what you built
+      and tells you the truth: a clear go or no-go, a fix list worst first, and an honest list of
+      what it could not check.</p>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/jahfeelautomation/vibe-check">Get it on GitHub</a>
+        <a class="btn ghost" href="https://github.com/jahfeelautomation/vibe-check/blob/main/case-study.md">Read a real run</a>
+      </div>
+      <p class="micro">Runs inside your own Claude Code. Your code never leaves your machine.</p>
+    </div>
+
+    <!-- EXAMPLE REPORT CARD -->
+    <div class="card" aria-label="Example Build Review Report">
+      <div class="bar"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span><span class="file">build-review.md</span></div>
+      <div class="body">
+        <span class="verdict">NO-GO &nbsp;2 critical open</span>
+        <p class="vcap">Vibe Check on the included demo app, which is built to fail on purpose.</p>
+
+        <div class="finding"><span class="sev c">CRIT</span><span><span class="ttl">Login query built by gluing strings together.</span><span class="fix">Fix: use parameterized queries so input can't change the query.</span></span></div>
+        <div class="finding"><span class="sev c">CRIT</span><span><span class="ttl">Admin page returns the password column with no sign-in.</span><span class="fix">Fix: require auth, and never send secrets to the client.</span></span></div>
+        <div class="finding"><span class="sev h">HIGH</span><span><span class="ttl">A secret key is typed straight into the source.</span><span class="fix">Fix: move it to an environment variable and rotate it.</span></span></div>
+
+        <div class="cnc"><b>COULD NOT CHECK</b><br>Live attack testing against a running copy. A real two-account test that proves one user cannot reach another's data.</div>
+        <div class="gateline">check.py: verdict NO-GO is consistent with the open findings. Report cleared to show.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THE GAP -->
+  <section>
+    <div class="h2">"It runs" is not "it's safe"</div>
+    <p class="sub">When you don't know what you're doing, an AI tool still gets you to working software.
+    The part it doesn't tell you is everything underneath. These are the questions Vibe Check is built
+    to answer honestly.</p>
+    <div class="chips">
+      <span class="chip">Did I leave a security hole?</span>
+      <span class="chip">Did I hardcode a secret?</span>
+      <span class="chip">Will it hold at ten times the users?</span>
+      <span class="chip">Can I keep building on it without it turning to mud?</span>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section>
+    <div class="h2">How it works</div>
+    <div class="grid3">
+      <div class="step"><div class="n">01</div><h3>Point it at your app</h3><p>Drop the folder next to a project you shipped and open it in your own Claude Code. No account, no upload, no service.</p></div>
+      <div class="step"><div class="n">02</div><h3>It reads, never runs</h3><p>It reviews the code the way a senior engineer would: auth, access control, data handling, dangerous shortcuts, and the test surface. Your code stays on your machine.</p></div>
+      <div class="step"><div class="n">03</div><h3>You get the truth</h3><p>An honest Build Review Report: a clear verdict, the fixes worst first, and the list of what a read of the code cannot prove.</p></div>
+    </div>
+  </section>
+
+  <!-- THE RULE -->
+  <section>
+    <div class="rule">
+      <div class="lock">[ ! ]</div>
+      <div>
+        <h3>The one rule it can't break</h3>
+        <p>It never calls your build "secure" or "ready" while anything serious is still open, and it
+        always shows the full list of what it could not check. A small script, <code>check.py</code>,
+        enforces that before any report reaches you. The reviewer cannot talk its way past it, and
+        neither can a hidden instruction buried in your code.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT YOU GET -->
+  <section>
+    <div class="h2">What you get back</div>
+    <div class="deliver">
+      <div class="del"><div class="ico">[=]</div><h3>A clear go or no-go</h3><p>One honest verdict at the top, not a wall of maybes you have to decode.</p></div>
+      <div class="del"><div class="ico">[#]</div><h3>A fix list, worst first</h3><p>Each item in plain English with the exact change to make, ordered by how much it matters.</p></div>
+      <div class="del"><div class="ico">[?]</div><h3>An honest could-not-check list</h3><p>The things a read of the code cannot settle, named in full, so nothing looks covered that isn't.</p></div>
+    </div>
+  </section>
+
+  <!-- TWO MODES -->
+  <section>
+    <div class="h2">Run it two ways</div>
+    <div class="modes">
+      <div class="mode"><div class="t">AUDIT MODE</div><h3>Something you already shipped</h3><p>Point it at a finished app and get the full review, top to bottom, so you finally know where you stand.</p></div>
+      <div class="mode"><div class="t">GATE MODE</div><h3>Each new change, before you trust it</h3><p>Run it on a change before you ship, so problems get caught at the door instead of in production.</p></div>
+    </div>
+  </section>
+
+  <!-- REAL RUN -->
+  <section>
+    <div class="h2">A real run, on a real app</div>
+    <div class="run">
+      <p>It has already done this on a production app we build and run for a paying business. The honest
+      result was undramatic on purpose: it confirmed the security work held, flagged two low items that
+      turned out to be fine on inspection, and handed back the list of what only a running system and a
+      person can prove. That last list is the point. A green check that means nothing is exactly what
+      this tool refuses to give you.</p>
+      <p style="margin-top:1rem"><a href="https://github.com/jahfeelautomation/vibe-check/blob/main/case-study.md">Read the full run &rarr;</a></p>
+    </div>
+  </section>
+
+  <footer>
+    <div>Vibe Check &middot; runs in your own Claude Code &middot; your code never leaves your machine</div>
+    <div class="foot-links">
+      <a href="https://github.com/jahfeelautomation/vibe-check">GitHub</a>
+      <a href="https://github.com/jahfeelautomation/vibe-check/blob/main/README.md">How to run</a>
+      <a href="https://github.com/jahfeelautomation/vibe-check/blob/main/LICENSE">License</a>
+    </div>
+  </footer>
+
+</div>
 </body>
 </html>
