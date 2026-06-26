@@ -60,8 +60,8 @@ Real reviews happen privately, against your own project.
 | `examples.md` | Four worked examples of findings and verdicts. |
 | `check.py` | The blocking gate, with a built-in self-test. |
 | `reference/00-coverage-map.md` | The seven lifecycle phases it reviews. |
-| `reference/01-could-not-check-manifest.md` | The thirteen things a static read cannot settle. |
-| `reference/02-area-checklists.md` | Nine review areas with concrete checks. |
+| `reference/01-could-not-check-manifest.md` | The fifteen things a static read cannot settle. |
+| `reference/02-area-checklists.md` | Ten review areas with concrete checks. |
 | `demo-target/` | A synthetic vulnerable app, the only thing this repo reviews. |
 | `sample-output/` | An honest report that passes the gate, and a tampered one that is blocked. |
 | `docs/index.html` | A one-page overview. |

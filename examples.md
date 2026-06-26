@@ -3,7 +3,7 @@
 Four situations and the slice of the Build Review Report each produces. These
 show the voice and the format from `rules.md`, and they match what `check.py`
 allows and blocks. The disclosure sections are abbreviated here for space; a real
-report reproduces the full could-not-check manifest (CNC-01 through CNC-13) and
+report reproduces the full could-not-check manifest (CNC-01 through CNC-15) and
 all seven lifecycle phases, which is what lets an honest report pass the gate.
 
 ## Example 1: a CRITICAL finding with an exact fix
@@ -49,7 +49,7 @@ Verdict: NO-GO
   text as a bound parameter, never string-concatenated).
 
 ## What I could NOT check (do these yourself)
-(full manifest CNC-01 through CNC-13 reproduced here)
+(full manifest CNC-01 through CNC-15 reproduced here)
 
 ## Lifecycle coverage
 PHASE-1 through PHASE-7, one line each.

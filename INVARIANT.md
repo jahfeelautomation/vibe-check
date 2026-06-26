@@ -16,7 +16,7 @@ broken.
 > The Build Review Report never calls the build secure or ready while any
 > serious issue is unresolved or any required coverage category is hidden. It
 > always discloses its full declared coverage: every could-not-check item
-> (CNC-01..CNC-13) and all seven lifecycle phases (PHASE-1..PHASE-7).
+> (CNC-01..CNC-15) and all seven lifecycle phases (PHASE-1..PHASE-7).
 
 A "serious issue" is a finding labeled CRITICAL, HIGH, or COULD-NOT-VERIFY that
 has not been marked resolved. While one of those is open, the report cannot
@@ -52,7 +52,7 @@ Two honest limits, stated plainly so you are never misled about the guarantee:
 2. **It verifies that DISCLOSURE is complete, never that the FINDINGS are
    complete.** No automated review, this one included, can promise it found
    every bug. What Vibe Check can promise, and does enforce, is that everything
-   it could not verify from a static read is disclosed in full: all thirteen
+   it could not verify from a static read is disclosed in full: all fifteen
    could-not-check items and all seven lifecycle phases appear in every report.
    You are never told a category was covered when it was not.
 

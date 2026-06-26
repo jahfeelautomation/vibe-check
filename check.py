@@ -5,7 +5,7 @@ Vibe Check - the blocking gate.
 INVARIANT (enforced here, not left to prose):
   The Build Review Report never calls the build "secure" or "ready" while a
   serious finding is unresolved, AND it always discloses its full declared
-  coverage: every could-not-check item (CNC-01..CNC-13) and every lifecycle
+  coverage: every could-not-check item (CNC-01..CNC-15) and every lifecycle
   phase (PHASE-1..PHASE-7) must be present.
 
 This is a CANONICAL FLOOR, not total coverage. It catches the common shapes of
@@ -23,7 +23,7 @@ import re
 import sys
 
 # --- canonical coverage tokens the report MUST contain ----------------------
-CNC_IDS = [f"CNC-{n:02d}" for n in range(1, 14)]   # CNC-01 .. CNC-13
+CNC_IDS = [f"CNC-{n:02d}" for n in range(1, 16)]   # CNC-01 .. CNC-15
 PHASE_IDS = [f"PHASE-{n}" for n in range(1, 8)]     # PHASE-1 .. PHASE-7
 
 # --- verdict grammar --------------------------------------------------------

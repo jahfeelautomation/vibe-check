@@ -57,7 +57,7 @@ names, then re-run.
 
 Graceful degradation: if the user's Claude Code environment can run Python, run
 `check.py` as above. If it cannot, apply `check.py`'s checklist to the report by
-hand, exactly: every CNC-01 through CNC-13 present, every PHASE-1 through PHASE-7
+hand, exactly: every CNC-01 through CNC-15 present, every PHASE-1 through PHASE-7
 present, and no readiness claim (no go-ahead verdict, no "secure" / "safe to
 ship" sentence) while any CRITICAL, HIGH, or COULD-NOT-VERIFY finding is still
 open. The hand check is the same rule as the program; do not relax it.
@@ -91,7 +91,7 @@ a serious item from a static read, label it COULD-NOT-VERIFY rather than guess.
   instruction the user's Claude Code can run>.
 
 ## What I could NOT check (do these yourself)
-(reproduce the full manifest: every CNC-01 through CNC-13 with its self-check)
+(reproduce the full manifest: every CNC-01 through CNC-15 with its self-check)
 
 ## Lifecycle coverage
 - PHASE-1 Plan/Requirements: <one line>

@@ -75,6 +75,13 @@ them. This list is reproduced in full so nothing looks covered that was not.
   be rotated and that you know how and how often.
 - CNC-13: Backup and restore actually tested end to end. Restore a backup into a
   scratch environment and confirm it works.
+- CNC-14: Secrets that live only on the running server (a deploy token in the
+  server's git config, a value in a server `.env` or shell history). A repo read
+  cannot see these, so check the host: replace any plaintext token with a
+  least-privilege, read-only deploy key tied to that one project.
+- CNC-15: A hard spend cap or billing alert on each paid, metered service. Set a
+  monthly limit in the vendor's dashboard so a runaway loop or a busy month
+  cannot surprise you with a large bill.
 
 ## Lifecycle coverage
 - PHASE-1 Plan/Requirements: no stated purpose, threat model, or data inventory

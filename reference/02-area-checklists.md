@@ -1,6 +1,6 @@
 # Area checklists
 
-Nine areas. Each check is something you can settle by reading the code, the
+Ten areas. Each check is something you can settle by reading the code, the
 config, or the git history, with no running system. Where a check actually needs
 a running system or a human decision, it is tagged with the matching `CNC-xx`
 from `01-could-not-check-manifest.md` and belongs in the report's "What I could
@@ -38,6 +38,10 @@ in the report, not here.
   previously committed secrets?
 - Are debug flags, verbose stack traces, and test backdoors off in the
   production configuration?
+- Scope limit: this read only sees secrets in the repo and its history. A secret
+  that lives only on the running server (a deploy token in the server's git
+  config, a value in the server's `.env` or shell history) is invisible here and
+  must be checked on the host. That live-host check is CNC-14.
 
 ## Injection & input handling
 - Are SQL/queries built with parameters or an ORM, never string concatenation of
@@ -79,6 +83,20 @@ in the report, not here.
 - Are expensive operations done synchronously inside a request that should be a
   background job?
 - Are there indexes on the columns that filtering and joins depend on?
+
+## Cost & metered-API controls
+- Does every call to a paid or metered service (AI model, SMS, email, maps,
+  storage) sit behind a guard that can stop it, rather than firing on every
+  event with no ceiling?
+- Is there a usage budget or counter in the code that stops or degrades at a
+  threshold you set, so a loop or a spike cannot run unbounded? (Whether a hard
+  cap is actually set in the vendor's own dashboard is CNC-15.)
+- Are paid calls rate-limited so a retry loop or a burst cannot hammer the
+  service?
+- Are paid actions idempotent or de-duplicated, so a retry or a double-fire does
+  not double-charge?
+- Are long or repeated paid operations triggered deliberately (a queue or a
+  schedule), not implicitly on every page load or webhook?
 
 ## Maintainability & structure
 - Is responsibility separated, or is there a single very large file doing

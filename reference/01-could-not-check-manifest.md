@@ -21,8 +21,10 @@ IDs are stable; check.py asserts every one appears in the report.
 | CNC-11 | Incident-response readiness (what happens when, not if, it breaks) | Write the one-page "who does what when it goes down" runbook. |
 | CNC-12 | Secret rotation and key-management policy over time | Confirm keys can be rotated and that you know how and how often. |
 | CNC-13 | Backup and restore actually tested end to end | Restore a backup into a scratch environment and confirm it works. |
+| CNC-14 | Secrets that live only on the running server (a deploy token in the server's git config, a value in a server `.env` or shell history, credentials in process listings or logs) | Log into the host and look: check `git config` for an embedded token, the server's `.env`, and shell history. Replace any plaintext token with a least-privilege credential; for code pulls, a read-only deploy key tied to that one project, so a server break-in cannot spread. |
+| CNC-15 | Whether a hard spend cap or billing alert is actually set on each paid, metered service (AI API, SMS, maps, storage) | In each vendor's dashboard, set a hard monthly spending limit or a billing alert at a threshold you choose, so a runaway loop or a busy month cannot surprise you with a large bill. |
 
-These thirteen are the floor, not a ceiling. They are the categories a careful
+These fifteen are the floor, not a ceiling. They are the categories a careful
 static review can never close on its own, so they are always named in full. If a
 specific project surfaces another runtime-or-human unknown, add it as an extra
 line in the report; never drop one of these to make a report look cleaner.
